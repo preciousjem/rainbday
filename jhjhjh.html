@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Click the Odd One Out</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 30px;
+        }
+        .shape {
+            width: 100px;
+            height: 100px;
+            cursor: pointer;
+            position: relative;
+        }
+        .square {
+            background-color: #4CAF50;
+        }
+        .circle {
+            background-color: #FF6347;
+            border-radius: 50%;
+        }
+        .triangle {
+            width: 0;
+            height: 0;
+            border-left: 50px solid transparent;
+            border-right: 50px solid transparent;
+            border-bottom: 100px solid #1E90FF;
+        }
+        .star {
+            width: 100px;
+            height: 100px;
+            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+            background-color: #FFD700;
+        }
+        .unique {
+            width: 100px;
+            height: 100px;
+            background-color: #FF1493;
+            border-radius: 50%;
+        }
+        .score {
+            font-size: 20px;
+            margin-top: 20px;
+            color: #333;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        /* Pop-up message style */
+        .popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 128, 0, 0.7);
+            color: white;
+            font-size: 30px;
+            padding: 20px;
+            border-radius: 10px;
+            display: none; /* Hidden by default */
+            z-index: 10;
+        }
+        /* Button to go to another HTML page */
+        .next-btn {
+            margin-top: 30px;
+            padding: 10px 20px;
+            font-size: 18px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .next-btn:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>Click the Odd One Out!</h1>
+    <div class="container" id="game-container">
+        <!-- Shapes will go here -->
+    </div>
+    <p class="score" id="score">Score: 0</p>
+    
+    <!-- Popup message style -->
+    <div id="popup" class="popup">Good Job!</div>
+
+    <script>
+        const shapes = [
+            'square',
+            'square',
+            'square',
+            'square',
+            'square',
+            'unique'  // One unique shape
+        ];
+
+        let score = 0;
+        let round = 1;
+        const totalRounds = 5;
+
+        // Function to generate the game and set up the click event
+        function startGame() {
+            if (round > totalRounds) {
+                // Game over after 5 rounds
+                document.getElementById('game-container').innerHTML = '<h2>Game Over! <button class="next-btn" onclick="window.location.reload()">Play Again</button></h2>';
+                return;
+            }
+
+            let gameContainer = document.getElementById("game-container");
+            gameContainer.innerHTML = ''; // Clear previous shapes
+
+            let shuffledShapes;
+            let uniqueShapeIndex;
+
+            // Last round (round 5) has no "odd one out"
+            if (round === totalRounds) {
+                shuffledShapes = ['square', 'square', 'square', 'square', 'square'];
+                uniqueShapeIndex = -1; // No unique shape in this round
+            } else {
+                shuffledShapes = [...shapes].sort(() => Math.random() - 0.5);
+                uniqueShapeIndex = shuffledShapes.indexOf('unique');
+            }
+
+            // Add shapes to the game container
+            shuffledShapes.forEach((shape, index) => {
+                let shapeContainer = document.createElement('div');
+                shapeContainer.classList.add('shape');
+                
+                // Add appropriate class based on the shape type
+                if (shape === 'circle') {
+                    shapeContainer.classList.add('circle');
+                } else if (shape === 'square') {
+                    shapeContainer.classList.add('square');
+                } else if (shape === 'star') {
+                    shapeContainer.classList.add('star');
+                } else if (shape === 'triangle') {
+                    shapeContainer.classList.add('triangle');
+                } else {
+                    shapeContainer.classList.add('unique');  // The unique shape
+                }
+
+                shapeContainer.addEventListener('click', function() {
+                    if (round === totalRounds) {
+                        // In round 5, all shapes are squares, so redirect to a new page
+                        window.location.href = 'hehe.html'; // Replace with actual redirection page
+                    } else {
+                        if (index === uniqueShapeIndex) {
+                            score++;
+                            document.getElementById('score').innerText = `Score: ${score}`;
+                            let popup = document.getElementById('popup');
+                            popup.style.display = 'block';
+                            setTimeout(() => {
+                                popup.style.display = 'none';
+                            }, 2000);
+                            round++;
+                            startGame(); // Go to the next round
+                        } else {
+                            alert('Oops! Try again! 😏');
+                        }
+                    }
+                });
+
+                gameContainer.appendChild(shapeContainer);
+            });
+        }
+
+        // Start the game on page load
+        window.onload = startGame;
+    </script>
+</body>
+</html>

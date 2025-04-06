@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Endless Balloon Love Envelope</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      background-color: #fef6fb;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .envelope-container {
+      position: relative;
+      width: 320px;
+      height: 300px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      perspective: 1000px;
+      z-index: 10;
+    }
+
+    .envelope {
+      position: relative;
+      width: 320px;
+      height: 220px;
+      background-color: #f7f2ec;
+      border-radius: 5px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+      overflow: visible;
+      cursor: pointer;
+    }
+
+    .flap {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 50%;
+      background-color: #f7f2ec;
+      clip-path: polygon(0 0, 100% 0, 50% 100%);
+      border-bottom: 1px solid #d3d3d3;
+      z-index: 1;
+      transform-origin: top;
+      transition: transform 0.6s ease;
+    }
+
+    .side-left,
+    .side-right {
+      position: absolute;
+      top: 50%;
+      width: 50%;
+      height: 50%;
+      background-color: #f7f2ec;
+      z-index: 1;
+    }
+
+    .side-left {
+      left: 0;
+      clip-path: polygon(0 0, 100% 100%, 0% 100%);
+    }
+
+    .side-right {
+      right: 0;
+      clip-path: polygon(100% 0, 100% 100%, 0% 100%);
+    }
+
+    .bottom-fold {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 50%;
+      background-color: #f7f2ec;
+      clip-path: polygon(50% 0, 100% 100%, 0 100%);
+      z-index: 0;
+    }
+
+    .ribbon {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: #f4a6c9;
+      width: 120px;
+      height: 20px;
+      border-radius: 10px;
+      z-index: 4;
+    }
+
+    .letter {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background-color: white;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+      padding: 20px;
+      box-sizing: border-box;
+      opacity: 0;
+      transform: translateY(100%);
+      transition: transform 0.6s ease 0.6s, opacity 0.6s ease 0.6s;
+      z-index: 3;
+    }
+
+    .letter p {
+      font-size: 16px;
+      color: #4B0082;
+      margin: 8px 0;
+    }
+
+    .show .flap {
+      transform: rotateX(-160deg);
+    }
+
+    .show .ribbon {
+      opacity: 0;
+    }
+
+    .show .letter {
+      transform: translateY(-220px);
+      opacity: 1;
+    }
+
+    .balloon {
+      position: absolute;
+      bottom: -100px;
+      width: 60px;
+      height: 80px;
+      border-radius: 50%;
+      animation: floatBalloon 10s linear infinite;
+      z-index: 0;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .balloon:after {
+      content: '';
+      position: absolute;
+      bottom: -20px;
+      left: 50%;
+      width: 4px;
+      height: 60px;
+      background-color: #333; /* Balloon string */
+      transform: translateX(-50%);
+    }
+
+    /* Animation for balloons to float up */
+    @keyframes floatBalloon {
+      0% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-100vh) scale(1.1);
+        opacity: 0;
+      }
+    }
+
+    /* Balloon color variations */
+    .balloon-1 { background-color: #FF6347; }
+    .balloon-2 { background-color: #FFD700; }
+    .balloon-3 { background-color: #32CD32; }
+    .balloon-4 { background-color: #1E90FF; }
+    .balloon-5 { background-color: #FF1493; }
+    .balloon-6 { background-color: #FF8C00; }
+  </style>
+</head>
+<body>
+
+  <!-- Audio element with loop attribute -->
+  <audio id="audioPlayer" preload="auto" loop>
+    <source src="happy na birthday mopa.mp3" type="audio/mp3" />
+    Your browser does not support the audio tag.
+  </audio>
+
+  <div class="envelope-container">
+    <div class="envelope" onclick="openEnvelope(this)">
+      <div class="flap"></div>
+      <div class="side-left"></div>
+      <div class="side-right"></div>
+      <div class="bottom-fold"></div>
+      <div class="ribbon"></div>
+      <div class="letter">
+        <p>Hey baby,</p>
+        <p>This little thing? Yeah, it’s full of my dirty little heart-thoughts just for you. 💖</p>
+        <p>I f**king crave you, think about you, obsess over you—and that’s me being chill, huh?</p>
+        <p>You’re my soft spot and my damn fire at once. Never stop being mine. 😈</p>
+        <p>Love you hard,</p>
+        <p>Your man 💋</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.3.2/dist/confetti.browser.min.js"></script>
+
+  <script>
+    function openEnvelope(el) {
+      el.classList.add('show');
+      startBalloonParty();
+      endlessConfetti();
+      playAudio();
+    }
+
+    function playAudio() {
+      var audioPlayer = document.getElementById("audioPlayer");
+      audioPlayer.play(); // Start the audio when the envelope is clicked
+    }
+
+    function startBalloonParty() {
+      setInterval(() => {
+        const balloon = document.createElement('div');
+        balloon.className = 'balloon balloon-' + (Math.floor(Math.random() * 6) + 1); // Randomize color
+        const randomSize = Math.random() * (120 - 60) + 60; // Randomize size between 60px and 120px
+        balloon.style.left = `${Math.random() * 90}%`; // Random position on the screen
+        balloon.style.width = `${randomSize}px`;
+        balloon.style.height = `${randomSize * 1.2}px`; // Slightly different height for some variety
+        document.body.appendChild(balloon);
+        setTimeout(() => {
+          balloon.remove(); // Remove after 8 seconds
+        }, 8000); // Adjusted balloon removal time
+      }, 500); // Faster balloon creation interval
+    }
+
+    function endlessConfetti() {
+      const defaults = {
+        startVelocity: 30,
+        spread: 360,
+        ticks: 60,
+        zIndex: 9999
+      };
+
+      setInterval(() => {
+        confetti(Object.assign({}, defaults, {
+          particleCount: 50,
+          origin: {
+            x: Math.random(),
+            y: Math.random() * 0.5
+          }
+        }));
+      }, 500); // Start confetti every 500ms
+    }
+  </script>
+
+</body>
+</html>
